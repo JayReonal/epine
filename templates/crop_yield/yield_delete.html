@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block title %}Crop{% endblock title %}
+{% block content %}
+<div class="content-wrapper">
+<section class="content">
+    <div class="container-fluid">
+        <div class="row"> 
+            <div class="container">
+                <div class="row mt-5">
+                    <div class="col-md-6 offset-md-3">
+                        <div class="border bg-white p-3">
+                            <div class="alert">
+                                <h5>All data stored from {{yields.category}} will be permanently deleted, are you sure you want to continue?</h5>
+                            </div>
+                            <form method="POST">
+                                {% csrf_token %}
+                                {{form}}
+                                <a href="{% url 'yield' %}" class="btn btn-secondary">Cancel</a>
+                                <input type="submit" value="Continue" class="btn btn-danger">
+                            </form> 
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</div>            
+{% endblock content %}

@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block title %}List Items{% endblock title %}
+{% block content %}
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="container">
+                <div class="row mt-5">
+                    <div class="col-md-6 offset-md-3">
+                        <div class="border bg-white p-3" style="width: 400px;">
+                            <h3>Update Item</h3>
+                            <hr>
+                            <form method="POST">
+                                {% csrf_token %}
+                                <div class="col-12 mb-4">{{form}}</div>
+                                <a href="{% url 'home' %}" class="btn btn-secondary">Cancel</a>
+                                <input type="submit" value="Update" class="btn btn-info">
+                            </form> 
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

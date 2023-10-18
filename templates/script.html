@@ -1,0 +1,115 @@
+{% load static %}
+<!-- jQuery -->
+<script src="{% static 'plugins/jquery/jquery.min.js' %}"></script>
+<!-- jQuery UI 1.11.4 -->
+<script src="{% static 'plugins/jquery-ui/jquery-ui.min.js' %}"></script>
+<!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
+<script>
+  $.widget.bridge('uibutton', $.ui.button)
+</script>
+<!-- Bootstrap 4 -->
+<script src="{% static 'plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<!-- ChartJS -->
+<script src="{% static 'plugins/chart.js/Chart.min.js' %}"></script>
+<!-- Sparkline -->
+<script src="{% static 'plugins/sparklines/sparkline.js' %}"></script>
+<!-- JQVMap -->
+<script src="{% static 'plugins/jqvmap/jquery.vmap.min.js' %}"></script>
+<script src="{% static 'plugins/jqvmap/maps/jquery.vmap.usa.js' %}"></script>
+<!-- jQuery Knob Chart -->
+<script src="{% static 'plugins/jquery-knob/jquery.knob.min.js' %}"></script>
+<!-- daterangepicker -->
+<script src="{% static 'plugins/moment/moment.min.js' %}"></script>
+<script src="{% static 'plugins/daterangepicker/daterangepicker.js' %}"></script>
+<!-- Tempusdominus Bootstrap 4 -->
+<script src="{% static 'plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js' %}"></script>
+<!-- Summernote -->
+<script src="{% static 'plugins/summernote/summernote-bs4.min.js' %}"></script>
+<!-- overlayScrollbars -->
+<script src="{% static 'plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js' %}"></script>
+<!-- AdminLTE App -->
+<script src="{% static 'dist/js/adminlte.js' %}"></script>
+<!-- AdminLTE for demo purposes -->
+<script src="{% static 'dist/js/demo.js' %}"></script>
+<!-- AdminLTE dashboard demo (This is only for demo purposes) -->
+<script src="{% static 'dist/js/pages/dashboard.js' %}"></script>
+
+<script>
+  const roomName = JSON.parse(document.getElementById('json-roomname').textContent);
+  const userName= JSON.parse(document.getElementById('json-username').textContent);
+
+  const chatSocket = new WebSocket(
+      'ws://'
+      + window.location.host
+      + '/ws/'
+      + roomName
+      + '/'
+  );
+  chatSocket.onmessage = function(e) {
+    console.log('onmessage');
+
+    const data = JSON.parse(e.data);
+
+    if (data.message) {
+        let messageContainerClass = data.username === userName ? 'sender' : 'receiver';
+
+        let html = `
+            <div class="message-container ${messageContainerClass}">
+              ${data.username !== userName ? `<p class="font-weight-bold">${data.username}</p>` : ''}
+              ${data.username !== userName ? '' : '<i class="far fa-user"></i>'}
+              <div class="message-content rounded p-3 mb-3">
+                  <p>${data.message}</p>
+                  <p class="message-time">Just now</p> 
+              </div>
+           </div>`;
+        document.querySelector('#chat-messages').innerHTML += html;
+
+        scrollToBottom();
+    } else {
+        alert('The message was empty!');
+    }
+};
+
+chatSocket.onclose = function(e) {
+    console.log('onclose');
+};
+
+
+  document.querySelector('#chat-message-submit').onclick = function(e) {
+      e.preventDefault();
+
+      const messageInputDom = document.querySelector('#chat-message-input');
+      const message = messageInputDom.value;
+
+      chatSocket.send(JSON.stringify({
+          'message': message,
+          'username': userName,
+          'room': roomName
+      }));
+
+      messageInputDom.value = '';
+
+      return false;
+  }
+
+  function scrollToBottom() {
+      const objDiv = document.querySelector('#chat-messages')
+      objDiv.scrollTop = objDiv.scrollHeight;
+  }
+
+  scrollToBottom();
+</script>
+<script>
+    $(document).ready(function () {
+      // Get the current URL path
+      var currentPath = window.location.pathname;
+  
+      // Find the corresponding sidebar link and add the 'active' class to it
+      $('.nav-sidebar a').each(function () {
+        var linkPath = $(this).attr('href');
+        if (currentPath === linkPath) {
+          $(this).addClass('active');
+        }
+      });
+    });
+  </script>

@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% block title %}List Items{% endblock title %}
+{% block content %}
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="">
+                <a class="btn btn-warning" data-toggle="modal" data-target="#priceModal">Price per Crop</i></a>
+              </div>
+            <div class="modal fade" id="priceModal" tabindex="-1" role="dialog" aria-labelledby="priceModal" aria-hidden="true">
+                <div class="modal-dialog" role="document" style="width: 400px;">
+                  <div class="modal-content">
+                    <div class="modal-body">
+                      <div class="float-right">
+                        <a href="">
+                          <button type="button" class="close" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                        </a>
+                      </div>
+                      <div class="">
+                        <table class="table table-hover">
+                          {% for prices in price %}
+                          <thead>
+                            
+                            </thead>
+                          <tbody>
+                          <tr>
+                            <td><strong><a href="{% url 'price_edit' prices.id %}">{{prices.price}}</a></strong></td>
+                            <td>
+                              
+                            </td>
+                          </tr>
+                          {% endfor %}
+                          </tbody>
+                          <tfoot>
+                          </tfoot>
+                      </table>
+                    </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            <div class="card card-body">
+                <table class="table table-bordered table-hover">
+                  <thead>
+                  <tr class="bg-success">
+                    <th>PLANT DATE</th>
+                    <th>NUMBER OF PLANTED</th>
+                    <th>UPDATE</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  {% for prices in price %}
+                  <tr>
+                    <td>{{prices.name}}</td>
+                    <td>{{prices.price}}</td>
+                    <td>
+                    
+                    </td>
+                  </tr>
+                  {% endfor %}
+                  </tbody>
+                  <tfoot>
+                  </tfoot>
+              </table>
+            </div>
+              <!-- Create Crop Modal -->
+              <div class="modal fade" id="createCropModal" tabindex="-1" role="dialog" aria-labelledby="createCropModalLabel" aria-hidden="true">
+              <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="createCropModalLabel">Create Crop</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                    <form method="post">
+                      {% csrf_token %}
+                      <div class="card-body mb-1">
+                        {{form}}
+                      </div>
+                      <button type="submit" class="btn btn-primary float-right">Submit</button>
+                      <!-- /.card-body -->
+                    </form>
+                  </div>
+                </div>
+              </div>
+              </div
+        </div>
+    </div>
+</div>
+{% endblock content %}

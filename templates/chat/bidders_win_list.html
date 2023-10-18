@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block title %}Bidding Winners{% endblock title %}
+{% block content %}
+    <div class="content-header">
+        <div class="container-fluid">
+          <div class="row mb-2">
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr class="bg-success">
+                        <th>Name</th>
+                        <th>Bid Price</th>
+                        <th>Total Pine Buy</th>
+                        <th>Date</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                {% for bid_win in bidders_win %}
+                <tbody>
+                    <tr>
+                        <td>{{bid_win.user}}</td>
+                        <td>{{bid_win.bid_price}}</td>
+                        <td>{{bid_win.total_buy_pine}}</td>
+                        <td>{{bid_win.date}}</td>
+                        <td>{{bid_win.total}}</td>
+                    </tr>
+                </tbody>
+                {% endfor %}
+            </table>
+            
+          </div>
+        </div>
+    </div>
+{% endblock content %}

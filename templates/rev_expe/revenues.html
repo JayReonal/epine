@@ -1,0 +1,132 @@
+{% extends 'base.html' %}
+{% block title %}Revenues{% endblock title %}
+{% block content %}
+  <div class="content-header">
+    <div class="container-fluid">
+      <div class="row mb-2">
+        <div class="col-sm-6">
+          <h1 class="m-0">Revenues</h1>
+        </div><!-- /.col -->
+        <div class="col-sm-6">
+          <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="#">Home</a></li>
+            <li class="breadcrumb-item active">Dashboard v1</li>
+          </ol>
+        </div><!-- /.col -->
+      </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+  </div>
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+          {% load custom_filters %}
+            <div class="card card-body">
+    <!-- Display Hawaii Yield Data -->
+    <h2>Hawaii Yield</h2>
+    <table class="table table-bordered table-hover">
+        <thead>
+            <tr class="bg-success">
+                <th>DATE</th>
+                <th>NUMBER OF PINEAPPLES HARVESTED</th>
+                <th>INCOME</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in hawaii_yields %}
+                <tr>
+                    <td>{{ item.harvest_date }}</td>
+                    <td>{{ item.total_yield|format_number }}</td>
+                    <td>Php.{{ item.value|format_number }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+        <tbody>
+          <tr>
+            <td><strong>Total</strong></td>
+            <td></td>
+            <td><strong>Php.{{total_value_hawaii|format_number}}</strong></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <!-- Display Pormosa Yield Data -->
+    <h2>Pormosa Yield</h2>
+    <table class="table table-bordered table-hover">
+        <thead>
+            <tr class="bg-success">
+                <th>DATE</th>
+                <th>NUMBER OF PINEAPPLES HARVESTED</th>
+                <th>INCOME</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in pormosa_yields %}
+                <tr>
+                    <td>{{ item.harvest_date }}</td>
+                    <td>{{ item.total_yield|format_number }}</td>
+                    <td>Php.{{ item.value|format_number }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+        <tbody>
+          <tr>
+            <td><strong>Total</strong></td>
+            <td></td>
+            <td><strong>Php.{{total_value_pormosa|format_number}}</strong></td>
+        </tr>
+        </tbody>
+    </table>
+            
+          </div>
+        </div>
+    </div>
+</section>
+<!-- <canvas id="revenueChart"></canvas> -->
+<script>
+  var revenueChartCanvas = $('#revenueChart').get(0).getContext('2d');
+
+  var revenueChartData = {
+      labels: [
+          {% for item in hawaii_yields %}
+              '{{ item.harvest_date|date:"F Y" }}', // Format as 'Month Year'
+          {% endfor %}
+      ],
+      datasets: [
+          {
+              label: 'Hawaii',
+              backgroundColor: 'rgba(60,141,188,0.9)', // Customize the color as needed
+              borderColor: 'rgba(60,141,188,0.8)',
+              data: [
+                  {% for item in hawaii_yields %}
+                      {{ item.value }},
+                  {% endfor %}
+              ]
+          },
+          {
+              label: 'Pormosa',
+              backgroundColor: 'rgba(210, 214, 222, 1)', // Customize the color as needed
+              borderColor: 'rgba(210, 214, 222, 1)',
+              data: [
+                  {% for item in pormosa_yields %}
+                      {{ item.value }},
+                  {% endfor %}
+              ]
+          }
+      ]
+  };
+
+  var revenueChart = new Chart(revenueChartCanvas, {
+      type: 'bar', // Use 'bar' for a bar chart
+      data: revenueChartData,
+      options: {
+          // Customize chart options here
+          scales: {
+              y: {
+                  beginAtZero: true, // Start the y-axis from zero
+              },
+          },
+      },
+  });
+</script>
+
+{% endblock content %}

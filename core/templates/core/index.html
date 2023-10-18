@@ -1,0 +1,719 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load custom_filters %}
+{% block css %}
+
+{% endblock css %}
+{% block content %}
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0">Dashboard</h1>
+          </div><!-- /.col -->
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="#">Home</a></li>
+              <li class="breadcrumb-item active">Dashboard</li>
+            </ol>
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        <!-- Small boxes (Stat box) -->
+        <div class="row">
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box bg-info">
+              <div class="inner">
+                <h3>{{total_planted|format_number}}</h3>
+
+                <p>TOTAL PLANTED</p>
+              </div>
+              <div class="icon">
+                <i class='fas fa-seedling'></i>
+              </div>
+              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+          </div>
+          <!-- ./col -->
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box bg-success">
+              <div class="inner">
+                <h3>{{total_yield|format_number}}</sup></h3>
+
+                <p>TOTAL HARVEST</p>
+              </div>
+              <div class="icon">
+                <i class='fas fa-leaf'></i>
+              </div>
+              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+          </div>
+          <!-- ./col -->
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box bg-warning">
+              <div class="inner">
+                <h3>{{income|format_number}}</h3>
+
+                <p>INCOME</p>
+              </div>
+              <div class="icon">
+                <i class='fas fa-money-bill-wave'></i>
+              </div>
+              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+          </div>
+          <!-- ./col -->
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box bg-danger">
+              <div class="inner">
+                <h3>{{total_expenses|format_number}}</h3>
+
+                <p>EXPENSES</p>
+              </div>
+              <div class="icon">
+                <i class='fas fa-money-bill'></i>
+              </div>
+              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+          </div>
+          <!-- ./col -->
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+
+    <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-md-6">
+
+            <!-- DONUT CHART -->
+            <div class="card card-warning">
+              <div class="card-header">
+                <h3 class="card-title">Supplies</h3>
+
+                <div class="card-tools">
+                  <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                    <i class="fas fa-minus"></i>
+                  </button>
+                  <button type="button" class="btn btn-tool" data-card-widget="remove">
+                    <i class="fas fa-times"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="card-body">
+                <canvas id="donutChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+
+          </div>
+          <!-- /.col (LEFT) -->
+          <div class="col-md-6">
+            <!-- PIE CHART -->
+            <div class="card card-danger">
+              <div class="card-header">
+                <h3 class="card-title">Finance</h3>
+
+                <div class="card-tools">
+                  <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                    <i class="fas fa-minus"></i>
+                  </button>
+                  <button type="button" class="btn btn-tool" data-card-widget="remove">
+                    <i class="fas fa-times"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="card-body">
+                <canvas id="pieChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+
+          </div>
+          <!-- /.col (RIGHT) -->
+        </div>
+        <!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </section>
+
+    <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="card card-primary">
+              <div class="card-header">
+                <h3 class="card-title">Harvested Crop</h3>
+    
+                <div class="card-tools">
+                  <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                    <i class="fas fa-minus"></i>
+                  </button>
+                  <button type="button" class="btn btn-tool" data-card-widget="remove">
+                    <i class="fas fa-times"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="chart">
+                  <canvas id="areaChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                </div>
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <div class="card card-primary">
+              <div class="card-header">
+                <h3 class="card-title">Revenue</h3>
+    
+                <div class="card-tools">
+                  <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                    <i class="fas fa-minus"></i>
+                  </button>
+                  <button type="button" class="btn btn-tool" data-card-widget="remove">
+                    <i class="fas fa-times"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="chart">
+                  <canvas id="revenueChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                </div>
+              </div>
+              <!-- /.card-body -->
+            </div>
+          </div>
+          <div class="col-md-6">
+            <!-- BAR CHART -->
+            <div class="card card-success">
+              <div class="card-header">
+                <h3 class="card-title">Planted Crop</h3>
+        
+                <div class="card-tools">
+                  <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                    <i class="fas fa-minus"></i>
+                  </button>
+                  <button type="button" class="btn btn-tool" data-card-widget="remove">
+                    <i class="fas fa-times"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="chart">
+                  <canvas id="cropbarChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                </div>
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- <div class="card card-success"> -->
+              <!-- <div class="card-header">
+                <h3 class="card-title">Bar Chart</h3>
+    
+                <div class="card-tools">
+                  <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                    <i class="fas fa-minus"></i>
+                  </button>
+                  <button type="button" class="btn btn-tool" data-card-widget="remove">
+                    <i class="fas fa-times"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="chart">
+                  <canvas id="barChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                </div>
+              </div> -->
+              <!-- /.card-body -->
+            <!-- </div> -->
+            <!-- /.card -->
+            <!-- STACKED BAR CHART -->
+            <div class="card card-success">
+              <!-- <div class="card-header">
+                <h3 class="card-title">Stacked Bar Chart</h3>
+    
+                <div class="card-tools">
+                  <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                    <i class="fas fa-minus"></i>
+                  </button>
+                  <button type="button" class="btn btn-tool" data-card-widget="remove">
+                    <i class="fas fa-times"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="chart">
+                  <canvas id="stackedBarChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                </div>
+              </div> -->
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- /.content -->
+ 
+  <!-- Create Room Modal -->
+  <div class="modal fade" id="roomModal" tabindex="-1" role="dialog" aria-labelledby="roomModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-body">
+          <div class="float-right">
+            <a href="{% url 'index' %}">
+              <button type="button" class="close" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </a>
+          </div>
+          <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+              {{roomform}}
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}
+{{ room_name|json_script:"room-name" }}
+    <script>
+        const roomName = JSON.parse(document.getElementById('room-name').textContent);
+
+        const notificationSocket = new WebSocket(
+            'ws://'
+            + window.location.host
+            + '/ws/notification/'
+            + roomName
+            + '/'
+        );
+
+        notificationSocket.onmessage = function(e) {
+            const data = JSON.parse(e.data);
+            //document.querySelector('#chat-log').value += (data.message + '\n');
+            console.log(data);
+            document.getElementById("notifications-dropdown").innerHTML = "<li class='dropdown-item'>" + data + "</li><hr class='dropdown-divider'>" + document.getElementById("notifications-dropdown").innerHTML;
+            document.getElementById("notification-badge").innerHTML = parseInt(document.getElementById("notification-badge").innerHTML) + 1;
+        };
+
+        notificationSocket.onclose = function(e) {
+            console.error('Chat socket closed unexpectedly');
+        };
+
+    </script>
+{% block script %}
+
+<script>
+  $(function () {
+    /* ChartJS
+     * -------
+     * Here we will create a few charts using ChartJS
+     */
+
+
+    //-------------
+    //- DONUT CHART -
+    //-------------
+    // Get context with jQuery - using jQuery's .get() method.
+    var donutChartCanvas = $('#donutChart').get(0).getContext('2d')
+    var donutData        = {
+      labels: [
+      {% for stocks in stock %} '{{stocks.item_name}}', {% endfor %}
+      ],
+      datasets: [
+        {
+          data: [{% for stocks in stock %}{{ stocks.quantity }}, {% endfor %}],
+          backgroundColor : ['#f56954', '#00a65a', '#f39c12', '#00c0ef', '#3c8dbc', '#d2d6de'],
+        }
+      ]
+    }
+    var donutOptions     = {
+      maintainAspectRatio : false,
+      responsive : true,
+    }
+    //Create pie or douhnut chart
+    // You can switch between pie and douhnut using the method below.
+    new Chart(donutChartCanvas, {
+      type: 'doughnut',
+      data: donutData,
+      options: donutOptions
+    })
+
+    //-------------
+    //- PIE CHART -
+    //-------------
+    // Get context with jQuery - using jQuery's .get() method.
+    var pieChartCanvas = $('#pieChart').get(0).getContext('2d')
+    var pieData        = {
+      labels: [
+          'Expenses',
+          'Revenues',
+          'Profit',
+      ],
+      datasets: [
+        {
+          data: [{{total_expenses}}, {{total_value}}, {{income}}],
+          backgroundColor : ['#d2d6de', '#3c8dbc', '#00c0ef', '#f39c12', '#00a65a', '#f56954'],
+        }
+      ]
+    }
+    var pieOptions     = {
+      maintainAspectRatio : false,
+      responsive : true,
+    }
+    //Create pie or douhnut chart
+    // You can switch between pie and douhnut using the method below.
+    new Chart(pieChartCanvas, {
+      type: 'pie',
+      data: pieData,
+      options: pieOptions
+    })
+
+    //-------------
+    //- BAR CHART -
+    //-------------
+    var barChartCanvas = $('#barChart').get(0).getContext('2d')
+    var barChartData = $.extend(true, {}, areaChartData)
+    var temp0 = areaChartData.datasets[0]
+    var temp1 = areaChartData.datasets[1]
+    barChartData.datasets[0] = temp1
+    barChartData.datasets[1] = temp0
+
+    var barChartOptions = {
+      responsive              : true,
+      maintainAspectRatio     : false,
+      datasetFill             : false
+    }
+
+    new Chart(barChartCanvas, {
+      type: 'bar',
+      data: barChartData,
+      options: barChartOptions
+    })
+
+    //---------------------
+    //- STACKED BAR CHART -
+    //---------------------
+    var stackedBarChartCanvas = $('#stackedBarChart').get(0).getContext('2d')
+    var stackedBarChartData = $.extend(true, {}, barChartData)
+
+    var stackedBarChartOptions = {
+      responsive              : true,
+      maintainAspectRatio     : false,
+      scales: {
+        xAxes: [{
+          stacked: true,
+        }],
+        yAxes: [{
+          stacked: true
+        }]
+      }
+    }
+
+    new Chart(stackedBarChartCanvas, {
+      type: 'bar',
+      data: stackedBarChartData,
+      options: stackedBarChartOptions
+    })
+  })
+</script>
+<script>
+  var areaChartCanvas = $('#areaChart').get(0).getContext('2d');
+
+  var areaChartData = {
+      labels: [
+          {% for yield_data in hawaii_yields %}
+              '{{ yield_data.harvest_date|date:"F Y" }}', // Format as 'Month Year'
+          {% endfor %}
+      ],
+      datasets: [
+          {
+              label: 'Hawaii Yield',
+              backgroundColor: 'rgba(60,141,188,0.9)',
+              borderColor: 'rgba(60,141,188,0.8)',
+              pointRadius: false,
+              pointColor: '#3b8bba',
+              pointStrokeColor: 'rgba(60,141,188,1)',
+              pointHighlightFill: '#fff',
+              pointHighlightStroke: 'rgba(60,141,188,1)',
+              data: [
+                  {% for yield_data in hawaii_yields %}
+                      {{ yield_data.total_yield }},
+                  {% endfor %}
+              ]
+          },
+          {
+              label: 'Pormosa Yield',
+              backgroundColor: 'rgba(210, 214, 222, 1)',
+              borderColor: 'rgba(210, 214, 222, 1)',
+              pointRadius: false,
+              pointColor: 'rgba(210, 214, 222, 1)',
+              pointStrokeColor: '#c1c7d1',
+              pointHighlightFill: '#fff',
+              pointHighlightStroke: 'rgba(220,220,220,1)',
+              data: [
+                  {% for yield_data in pormosa_yields %}
+                      {{ yield_data.total_yield }},
+                  {% endfor %}
+              ]
+          }
+      ]
+  };
+
+  var areaChart = new Chart(areaChartCanvas, {
+      type: 'line',
+      data: areaChartData,
+      options: {
+          // Customize chart options here
+      }
+  });
+
+  // Bar chart
+  var barChartCanvas = $('#barChart').get(0).getContext('2d');
+
+    var barChartData = {
+        labels: [
+            {% for yield_data in hawaii_yields %}
+                '{{ yield_data.harvest_date|date:"F Y" }}', // Format as 'Month Year'
+            {% endfor %}
+        ],
+        datasets: [
+            {
+                label: 'Hawaii Yield',
+                backgroundColor: 'rgba(60,141,188,0.9)',
+                borderColor: 'rgba(60,141,188,0.8)',
+                data: [
+                    {% for yield_data in hawaii_yields %}
+                        {{ yield_data.total_yield }},
+                    {% endfor %}
+                ]
+            },
+            {
+                label: 'Pormosa Yield',
+                backgroundColor: 'rgba(210, 214, 222, 1)',
+                borderColor: 'rgba(210, 214, 222, 1)',
+                data: [
+                    {% for yield_data in pormosa_yields %}
+                        {{ yield_data.total_yield }},
+                    {% endfor %}
+                ]
+            }
+        ]
+    };
+
+    var barChart = new Chart(barChartCanvas, {
+        type: 'bar', // Use 'bar' for a bar chart
+        data: barChartData,
+        options: {
+            // Customize chart options here
+        }
+    });
+
+    // stackedbarchart
+    var stackedBarChartCanvas = $('#stackedBarChart').get(0).getContext('2d');
+
+    var stackedBarChartData = {
+        labels: [
+            {% for yield_data in hawaii_yields %}
+                '{{ yield_data.harvest_date|date:"F Y" }}', // Format as 'Month Year'
+            {% endfor %}
+        ],
+        datasets: [
+            {
+                label: 'Hawaii Yield',
+                backgroundColor: 'rgba(60,141,188,0.9)',
+                borderColor: 'rgba(60,141,188,0.8)',
+                data: [
+                    {% for yield_data in hawaii_yields %}
+                        {{ yield_data.total_yield }},
+                    {% endfor %}
+                ],
+                stack: 'stack'
+            },
+            {
+                label: 'Pormosa Yield',
+                backgroundColor: 'rgba(210, 214, 222, 1)',
+                borderColor: 'rgba(210, 214, 222, 1)',
+                data: [
+                    {% for yield_data in pormosa_yields %}
+                        {{ yield_data.total_yield }},
+                    {% endfor %}
+                ],
+                stack: 'stack'
+            }
+        ]
+    };
+
+    var stackedBarChart = new Chart(stackedBarChartCanvas, {
+        type: 'bar',
+        data: stackedBarChartData,
+        options: {
+            scales: {
+                x: {
+                    stacked: true,
+                },
+                y: {
+                    stacked: true,
+                }
+            },
+            // Customize other chart options here
+        }
+    });
+</script>
+<script>
+  var barChartCanvas = $('#cropBarChart').get(0).getContext('2d');
+
+  var barChartData = {
+      labels: [
+          {% for crop_data in crops %}
+              '{{ crop_data.plant_date|date:"F Y" }}', // Format as 'Month Year'
+          {% endfor %}
+      ],
+      datasets: [
+          {
+              label: 'Hawaii Yield',
+              backgroundColor: 'rgba(60,141,188,0.9)',
+              borderColor: 'rgba(60,141,188,0.8)',
+              data: [
+                  {% for crop_data in crops %}
+                      {% if crop_data.category.name == 'Hawaii' %}
+                          {{ crop_data.total_planted }},
+                      {% else %}
+                          0, // Set 0 for non-Hawaii data
+                      {% endif %}
+                  {% endfor %}
+              ]
+          },
+          {
+              label: 'Pormosa Yield',
+              backgroundColor: 'rgba(1, 222, 214, 210)',
+              borderColor: 'rgba(1, 222, 214, 210)',
+              data: [
+                  {% for crop_data in crops %}
+                      {% if crop_data.category.name == 'Pormosa' %}
+                          {{ crop_data.number_planted }},
+                      {% else %}
+                          0, // Set 0 for non-Pormosa data
+                      {% endif %}
+                  {% endfor %}
+              ]
+          }
+      ]
+  };
+
+  var barChart = new Chart(barChartCanvas, {
+      type: 'bar',
+      data: barChartData,
+      options: {
+          scales: {
+              x: {
+                  stacked: true,
+              },
+              y: {
+                  stacked: true,
+              },
+          },
+          // Customize other chart options here
+      }
+  });
+</script>
+<script>
+  var barChartCanvas = $('#cropbarChart').get(0).getContext('2d');
+
+  var barChartData = {
+      labels: [
+          {% for crop_data in hawaii_crop %}
+              '{{ crop_data.plant_date|date:"F Y" }}', // Format as 'Month Year'
+          {% endfor %}
+      ],
+      datasets: [
+          {
+              label: 'Hawaii Crop',
+              backgroundColor: 'rgba(60,141,188,0.9)',
+              borderColor: 'rgba(60,141,188,0.8)',
+              data: [
+                  {% for crop_data in hawaii_crop %}
+                      {{ crop_data.total_planted }},
+                  {% endfor %}
+              ]
+          },
+          {
+              label: 'Pormosa Crop',
+              backgroundColor: 'rgba(210, 214, 222, 1)',
+              borderColor: 'rgba(210, 214, 222, 1)',
+              data: [
+                  {% for crop_data in pormosa_crop %}
+                      {{ crop_data.total_planted }},
+                  {% endfor %}
+              ]
+          }
+      ]
+  };
+
+  var barChart = new Chart(barChartCanvas, {
+      type: 'bar', // Use 'bar' for a bar chart
+      data: barChartData,
+      options: {
+          // Customize chart options here
+      }
+  });
+</script>
+<script>
+  var revenueChartCanvas = $('#revenueChart').get(0).getContext('2d');
+
+  var revenueChartData = {
+      labels: [
+          {% for item in hawaii_yields %}
+              '{{ item.harvest_date|date:"F Y" }}', // Format as 'Month Year'
+          {% endfor %}
+      ],
+      datasets: [
+          {
+              label: 'Hawaii',
+              backgroundColor: 'rgba(60,141,188,0.9)', // Customize the color as needed
+              borderColor: 'rgba(60,141,188,0.8)',
+              data: [
+                  {% for item in hawaii_yields %}
+                      {{ item.value }},
+                  {% endfor %}
+              ]
+          },
+          {
+              label: 'Pormosa',
+              backgroundColor: 'rgba(210, 214, 222, 1)', // Customize the color as needed
+              borderColor: 'rgba(210, 214, 222, 1)',
+              data: [
+                  {% for item in pormosa_yields %}
+                      {{ item.value }},
+                  {% endfor %}
+              ]
+          }
+      ]
+  };
+
+  var revenueChart = new Chart(revenueChartCanvas, {
+      type: 'bar', // Use 'bar' for a bar chart
+      data: revenueChartData,
+      options: {
+          // Customize chart options here
+          scales: {
+              y: {
+                  beginAtZero: true, // Start the y-axis from zero
+              },
+          },
+      },
+  });
+</script>
+{% endblock script %}

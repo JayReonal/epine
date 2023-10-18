@@ -1,0 +1,146 @@
+celery -A epine beat -l INFO
+
+celery -A epine.celery worker --pool=solo -l info
+
+DELIMITER //
+DROP TRIGGER IF EXISTS after_stockmgmt_stock_update//
+CREATE TRIGGER after_stockmgmt_stock_update AFTER UPDATE ON stockmgmt_stock FOR EACH ROW
+BEGIN
+	IF new.issue_quantity = 0 
+		THEN INSERT INTO stockmgmt_stockhistory(
+			id, 
+			last_updated, 
+			category_id, 
+			item_name, 
+            issue_quantity,
+            issue_by,
+			quantity, 
+			receive_quantity, 
+			receive_by) 
+		VALUES(
+			new.id, 
+			new.last_updated, 
+			new.category_id, 
+			new.item_name, 
+            new.issue_quantity,
+            new.issue_by,
+			new.quantity, 
+			new.receive_quantity, 
+			new.receive_by);
+
+	ELSEIF new.receive_quantity = 0 
+		THEN INSERT INTO stockmgmt_stockhistory(
+			id, 
+			last_updated, 
+			category_id, 
+			item_name, 
+            receive_quantity,
+            receive_by,
+			issue_quantity, 
+			issue_to, 
+			issue_by, 
+			quantity) 
+		VALUES(
+			new.id, 
+			new.last_updated, 
+			new.category_id, 
+			new.item_name, 
+            new.receive_quantity,
+            new.receive_by,
+			new.issue_quantity, 
+			new.issue_to, 
+			new.issue_by, 
+			new.quantity);
+	END IF;
+END//
+DELIMITER ;
+
+views
+@login_required(login_url='login')
+def issue_items(request, pk):
+    queryset = Stock.objects.get(id=pk)
+
+    if request.method == 'POST':
+        form = IssueForm(request.POST, instance=queryset)
+        if form.is_valid():
+            user = request.user
+            instance = form.save(commit=False)
+            instance.issue_by = user.username
+            instance.receive_quantity = 0
+            instance.quantity -= instance.issue_quantity
+            instance.save()
+
+            total_price = instance.issue_quantity * instance.price
+
+            # Create an item history record with the issuing user
+            ItemHistory.objects.create(
+                user=user,
+                item=queryset,
+                quantity=instance.issue_quantity,
+                total_price=total_price,
+                action="Issued",
+                issued_by=user.username,  # Set the issuing user
+            )
+
+            messages.success(request, f"Issued SUCCESSFULLY. {instance.quantity} {instance.item_name} now left in Store")
+
+            return redirect('stock_detail', pk=instance.id)
+
+    else:
+        form = IssueForm(instance=queryset)
+
+    print(f"Issuing User: {user.username}")
+
+    context = {
+        "title": f"Issue {queryset.item_name}",
+        "queryset": queryset,
+        "form": form,
+        "username": f"Issue By: {request.user}",
+    }
+
+    return render(request, "add_items.html", context)
+
+
+@login_required(login_url='login')
+def receive_items(request, pk):
+    queryset = Stock.objects.get(id=pk)
+    form = ReceiveForm(request.POST or None, instance=queryset)
+
+    if form.is_valid():
+        instance = form.save(commit=False)
+        instance.issue_quantity = 0
+        instance.quantity += instance.receive_quantity
+        instance.save()
+
+        total_price = instance.receive_quantity * instance.price
+
+        # Create an item history record with the receiving user
+        ItemHistory.objects.create(
+            user=request.user,
+            item=queryset,
+            quantity=instance.receive_quantity,
+            total_price=total_price,
+            action="Received",
+            received_by=request.user.username,  # Set the receiving user
+        )
+
+        messages.success(request, f"Received SUCCESSFULLY. {instance.quantity} {instance.item_name}s now in Store")
+
+        return redirect('stock_detail', pk=instance.id)
+    
+    print(f"Receiving User: {request.user.username}")
+
+    context = {
+        "title": 'Receive ' + str(queryset.item_name),
+        "instance": queryset,
+        "form": form,
+        "username": 'Receive By: ' + str(request.user),
+    }
+
+    return render(request, "add_items.html", context)
+
+    /--dropping the table--/
+    from django.db import connection
+    table_name = BadPine._meta.db_table
+    with connection.cursor() as cursor:
+    cursor.execute(f"DROP TABLE {table_name}")

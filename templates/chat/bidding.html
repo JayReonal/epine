@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% block title %}Crop{% endblock title %}
+{% block content %}
+    <div class="content-header">
+        <div class="container-fluid">
+          <div class="row mb-2">
+            <div class="col-sm-6">
+             
+            </div><!-- /.col -->
+            <div class="col-sm-6">
+              <ol class="breadcrumb float-sm-right">
+                <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#Moadal">Room</a>
+                <div class="modal fade" id="Moadal" tabindex="-1" role="dialog" aria-labelledby="MoadalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                      <div class="modal-content">
+                        <div class="modal-body">
+                          <div class="float-right">
+                            <a href="{% url 'bidding' %}">
+                              <button type="button" class="close" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                              </button>
+                            </a>
+                          </div>
+                          <form method="post">
+                            {% csrf_token %}
+                            <div class="form-group">
+                              {{roomform}}
+                            </div>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                          </form>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  
+                <div class="modal fade" id="biddierModal" tabindex="-1" role="dialog" aria-labelledby="biddierModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                      <div class="modal-content">
+                        <div class="modal-body">
+                          <div class="float-right">
+                            <a href="{% url 'bidding' %}">
+                              <button type="button" class="close" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                              </button>
+                            </a>
+                          </div>
+                          <form method="post">
+                            {% csrf_token %}
+                            <div class="form-group">
+                              {{biddingForm}}
+                            </div>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                          </form>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+              </ol>
+            </div><!-- /.col -->
+          </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+      </div>
+<section class="content">
+    <div class="container-fluid">
+        <div class="row"> 
+            {% for room in rooms %}
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-light">
+                    <div class="float-right">
+                        <a href="{% url 'room_delete' room.id %}">
+                          <button type="button" class="close" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                        </a>
+                      </div>
+                    <h2 class="mb-5 text-2xl font-semibold text-center  ">
+                        {{room.name}} <br>
+                        <span style="font-size: 18px;">({{room.date_added}})</span>
+                    </h2>
+                    <div class="col-12 mb-6 p-3">
+                        <a href="#" class="btn btn-success" data-toggle="modal" data-target="#biddierModal">Bid Winner</a>
+                    </div>
+                    <div class="col-12 mb-6 p-3">
+                    <a href="{% url 'room' room.slug %}" class="btn btn-primary btn-block">Join</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+</div>
+{% endblock content %}
